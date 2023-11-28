@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import React from 'react';
+import {Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { authSelector } from './redux/authReducer';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistor } from "./store";
+
+// Importing react toastify library ------>>
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import './App.css';
+import Home from './pages/home_page/home';
+import Login from "./pages/login_page/login";
+
 
 function App() {
+  const {isLogin} = useSelector(authSelector);
+  console.log("Inside app.js & login status is : ", isLogin);
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <PersistGate loading={null} persistor={persistor}>
+      <Routes>
+        <Route index = {true} element={isLogin ? <Home /> : <Navigate to="/login" />}/>
+        <Route path='/login' element={isLogin? <Navigate to="/"/> : <Login />}/>
+      </Routes>      
+      </PersistGate>
+      <ToastContainer />
     </div>
   );
 }
